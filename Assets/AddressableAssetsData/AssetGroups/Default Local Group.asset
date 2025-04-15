@@ -17,8 +17,8 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: ad097496816362a49a736cd19254b2a8
   m_SerializeEntries:
-  - m_GUID: bb8b34ec14e3c5149bdb1379ccd4ee39
-    m_Address: MainMenu
+  - m_GUID: 56fadf4da0d4ce54183323537d8ee35c
+    m_Address: GameState
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -27,13 +27,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 56fadf4da0d4ce54183323537d8ee35c
-    m_Address: GameState
+  - m_GUID: 7d5d953aed2a529479a0ca260f2dc8b3
+    m_Address: GameMenu
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7d5d953aed2a529479a0ca260f2dc8b3
-    m_Address: GameMenu
+  - m_GUID: bb8b34ec14e3c5149bdb1379ccd4ee39
+    m_Address: MainMenu
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c316b6d50debdde489f552987b2bdf1c
+    m_Address: LoadingScreen
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -41,5 +46,5 @@ MonoBehaviour:
   m_Settings: {fileID: 11400000, guid: 5f4b8a16b90b8e84d902c79ebac78ed8, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 5135c9fcaf24d5e42b549d2cf1521b69, type: 2}
     - {fileID: 11400000, guid: 8b8d2b76a80af1a48aee142a25a647d1, type: 2}
+    - {fileID: 11400000, guid: 5135c9fcaf24d5e42b549d2cf1521b69, type: 2}

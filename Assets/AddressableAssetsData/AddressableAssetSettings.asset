@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: ad097496816362a49a736cd19254b2a8
   m_currentHash:
     serializedVersion: 2
-    Hash: a525b3476b66b8e729647a01b963f305
+    Hash: 106c4267c76dc4de81bfe8ac251f2c0c
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -57,31 +57,31 @@ MonoBehaviour:
       m_Id: 69efc484f134189459637a1e8f5c3c6e
       m_ProfileName: Default
       m_Values:
-      - m_Id: c919d91f5607b6e4387a0bb3b83cc757
-        m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
       - m_Id: 1aa920d8467d3d4448f5560a8317ebb9
         m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
-      - m_Id: eb72a7c42d3328b4389332ad4f69b489
-        m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
-      - m_Id: db5b25aaa3398f84f86a2a5c04c5a33f
-        m_Value: ServerData/[BuildTarget]
       - m_Id: 9703e902c200c924da4103077d395ceb
         m_Value: http://[PrivateIpAddress]:[HostingServicePort]
+      - m_Id: c919d91f5607b6e4387a0bb3b83cc757
+        m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
+      - m_Id: db5b25aaa3398f84f86a2a5c04c5a33f
+        m_Value: ServerData/[BuildTarget]
+      - m_Id: eb72a7c42d3328b4389332ad4f69b489
+        m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
     m_ProfileEntryNames:
-    - m_Id: c919d91f5607b6e4387a0bb3b83cc757
-      m_Name: BuildTarget
-      m_InlineUsage: 0
     - m_Id: 1aa920d8467d3d4448f5560a8317ebb9
       m_Name: Local.BuildPath
       m_InlineUsage: 0
-    - m_Id: eb72a7c42d3328b4389332ad4f69b489
-      m_Name: Local.LoadPath
+    - m_Id: 9703e902c200c924da4103077d395ceb
+      m_Name: Remote.LoadPath
+      m_InlineUsage: 0
+    - m_Id: c919d91f5607b6e4387a0bb3b83cc757
+      m_Name: BuildTarget
       m_InlineUsage: 0
     - m_Id: db5b25aaa3398f84f86a2a5c04c5a33f
       m_Name: Remote.BuildPath
       m_InlineUsage: 0
-    - m_Id: 9703e902c200c924da4103077d395ceb
-      m_Name: Remote.LoadPath
+    - m_Id: eb72a7c42d3328b4389332ad4f69b489
+      m_Name: Local.LoadPath
       m_InlineUsage: 0
     m_ProfileVersion: 1
   m_LabelTable:

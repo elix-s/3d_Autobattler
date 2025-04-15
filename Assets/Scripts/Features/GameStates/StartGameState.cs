@@ -1,4 +1,6 @@
 using Common.AssetsSystem;
+using Common.UIService;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -18,11 +20,14 @@ public class StartGameState : IGameState
         _uiService = uiService;
     }
     
-    public async void Enter()
+    public async UniTask Enter(StatePayload payload)
     {
-        var gameMenu = await _uiService.ShowUIPanel<GameMenuView>("GameMenu");
+        _uiService.ShowLoadingScreen(1500).Forget();
+        
+        var gameMenu = await _uiService.ShowUIPanelWithComponent<GameMenuView>("GameMenu");
         var panel = await _assetProvider.GetAssetAsync<GameObject>("GameState");
         var prefab = _container.Instantiate(panel);
+        
         _assetUnloader.AddResource(panel);
         _assetUnloader.AttachInstance(prefab);
         _assetUnloader.AttachInstance(gameMenu.gameObject);
@@ -30,7 +35,7 @@ public class StartGameState : IGameState
     
     public void Update() {}
 
-    public void Exit()
+    public async UniTask Exit()
     {
         _assetUnloader.Dispose();
     }

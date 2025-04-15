@@ -1,4 +1,5 @@
-using UnityEngine;
+using Common.GameStateService;
+using Cysharp.Threading.Tasks;
 
 public class StartLoadingState : IGameState
 {
@@ -11,13 +12,13 @@ public class StartLoadingState : IGameState
         _logger = logger;
     }
     
-    public void Enter()
+    public async UniTask Enter(StatePayload payload)
     {
         _logger.Log("StartLoadingState");
-        _gameState.ChangeState<MenuState>();
+        _gameState.ChangeState<MenuState>().Forget();
     }
-
+    
     public void Update(){}
     
-    public void Exit() {}
+    public async UniTask Exit() {}
 }

@@ -1,3 +1,5 @@
+using Common.GameStateService;
+using Common.UIService;
 using Cysharp.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
@@ -28,7 +30,7 @@ public class MainMenuView : MonoBehaviour
     private async void StartGame()
     {
         await UniTask.Delay(200);
-        _gameStateService.ChangeState<StartGameState>();
+        _gameStateService.ChangeState<StartGameState>().Forget();
     }
 
     private async void Exit()

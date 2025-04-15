@@ -1,4 +1,6 @@
 using Common.AssetsSystem;
+using Common.AudioService;
+using Common.UIService;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer;
@@ -26,11 +28,11 @@ public class MenuState : IGameState
         _assetUnloader = assetUnloader;
     }
 
-    public async void Enter()
+    public async UniTask Enter(StatePayload payload)
     {
-        _logger.Log("Entering MenuState");
-        var mainMenu = await _uiService.ShowUIPanel<MainMenuView>("MainMenu");
+        _uiService.ShowLoadingScreen(1500).Forget();
         
+        var mainMenu = await _uiService.ShowUIPanelWithComponent<MainMenuView>("MainMenu");
         var panel = await _assetProvider.GetAssetAsync<GameObject>("MenuState");
         var prefab = _container.Instantiate(panel);
         
@@ -44,7 +46,7 @@ public class MenuState : IGameState
         
     }
 
-    public void Exit()
+    public async UniTask Exit()
     {
         _assetUnloader.Dispose();
     }

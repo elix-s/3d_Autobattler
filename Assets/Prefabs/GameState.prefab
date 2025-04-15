@@ -246,14 +246,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 4926184681032082467}
-  _targetRb: {fileID: 4017602175641994691}
-  _delayTime: 0.2
-  _offset: {x: 0, y: 5, z: -7}
+  _lookAtOffset: {x: 0, y: 1.5, z: 0}
+  _followSmoothTime: 0.5
+  _initialOffset: {x: 0, y: 5, z: -7}
+  _enableRotation: 1
+  _rotateMouseButton: 1
+  _rotationSpeedX: 4
+  _rotationSpeedY: 2
+  _minPitch: -30
+  _maxPitch: 70
+  _enableZoom: 1
   _zoomSpeed: 2
-  _minZoom: 3
-  _maxZoom: 10
-  _currentZoom: 0
-  _velocity: {x: 0, y: 0, z: 0}
+  _minZoomDistance: 3
+  _maxZoomDistance: 15
+  _handleCollisions: 1
+  _collisionLayers:
+    serializedVersion: 2
+    m_Bits: 1
+  _collisionPadding: 0.2
 --- !u!1 &384326695396906886
 GameObject:
   m_ObjectHideFlags: 0
@@ -969,10 +979,9 @@ GameObject:
   - component: {fileID: 6794868969409746497}
   - component: {fileID: 1177145903742939318}
   - component: {fileID: 5647049288368395004}
-  - component: {fileID: 3340427925159912130}
   - component: {fileID: 6366456195426885160}
-  m_Layer: 0
-  m_Name: Plane
+  m_Layer: 7
+  m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1043,28 +1052,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &3340427925159912130
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3418794169915606519}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!114 &6366456195426885160
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1202,8 +1189,17 @@ MonoBehaviour:
   _explosionEffect: {fileID: 1936024721376690687, guid: 9678196ae63c94740b1e71fbe81d251a,
     type: 3}
   _forceField: {fileID: 2442011358590358228}
-  _speed: 5
-  _interpolationSpeed: 10
+  _cameraTransform: {fileID: 4215191051171316688}
+  _moveSpeed: 7
+  _rotationSpeed: 15
+  _moveThreshold: 0.1
+  _groundCheckPoint: {fileID: 0}
+  _groundCheckRadius: 0.2
+  _groundLayers:
+    serializedVersion: 2
+    m_Bits: 128
+  _rb: {fileID: 4017602175641994691}
+  _animator: {fileID: 2492586669273457436}
 --- !u!54 &4017602175641994691
 Rigidbody:
   m_ObjectHideFlags: 0

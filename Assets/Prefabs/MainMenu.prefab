@@ -147,7 +147,6 @@ GameObject:
   - component: {fileID: 4533781955794962242}
   - component: {fileID: 8201945827662286156}
   - component: {fileID: 2564678033122624562}
-  - component: {fileID: 6911927698486594434}
   - component: {fileID: 8284987247120715384}
   m_Layer: 5
   m_Name: MainMenu
@@ -254,19 +253,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _startButton: {fileID: 8320612422869678803}
   _exitButton: {fileID: 7043813940048827014}
---- !u!114 &6911927698486594434
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1128483593990211894}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4981716078777494cbd255b7e4f0604d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _fadeBackground: {fileID: 8184436084998263927}
 --- !u!225 &8284987247120715384
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -289,7 +275,6 @@ GameObject:
   m_Component:
   - component: {fileID: 347602748828173046}
   - component: {fileID: 2940042301317278712}
-  - component: {fileID: 8184436084998263927}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -327,36 +312,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1594296520096029294}
   m_CullTransparentMesh: 1
---- !u!114 &8184436084998263927
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1594296520096029294}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.01886791, g: 0.01886791, b: 0.01886791, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &6258396167504227685
 GameObject:
   m_ObjectHideFlags: 0
