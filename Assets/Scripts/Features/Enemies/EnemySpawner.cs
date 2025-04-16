@@ -1,6 +1,9 @@
+using System;
+using System.Threading;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using VContainer;
+using Random = UnityEngine.Random;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -13,18 +16,27 @@ public class EnemySpawner : MonoBehaviour
     private FastEnemyFactory _fastEnemyFactory;
     private GameSessionService _gameSessionService;
     
+    private CancellationTokenSource _cancellationTokenSource;
+    
     [Inject]
-    public void Construct(GameSessionService gameSessionService)
+    private void Construct(GameSessionService gameSessionService)
     {
         _gameSessionService = gameSessionService;
     }
 
-    void Start()
+    private void Awake()
     {
         _bigEnemyFactory = new BigEnemyFactory(_bigEnemyPrefab);
         _fastEnemyFactory = new FastEnemyFactory(_fastEnemyPrefab);
+        _cancellationTokenSource = new CancellationTokenSource();
+    }
 
-       SpawnEnemies();
+    private void Start()
+    {
+        if (!_cancellationTokenSource.IsCancellationRequested)
+        {
+            SpawnEnemies();
+        }
     }
 
     private async void SpawnEnemies()
@@ -33,24 +45,37 @@ public class EnemySpawner : MonoBehaviour
 
         while (_gameSessionService.GameStarted)
         {
-            await UniTask.Delay(_spawnInterval);
+            try
+            {
+                await UniTask.Delay(_spawnInterval, cancellationToken: _cancellationTokenSource.Token);
+                Vector3 spawnPos;
 
-            Vector3 spawnPos;
-            
-            do
-            {
-                spawnPos = new Vector3(Random.Range(-5f, 5f), 0, Random.Range(-5f, 5f));
-            }
-            while (Vector3.Distance(spawnPos, _playerTransform.position) < minSpawnDistance);
+                do
+                {
+                    spawnPos = new Vector3(Random.Range(-5f, 5f), 0, Random.Range(-5f, 5f));
+                } while (Vector3.Distance(spawnPos, _playerTransform.position) < minSpawnDistance);
 
-            if (Random.value > 0.5f)
-            {
-                IEnemy enemy = _bigEnemyFactory.CreateEnemy(_playerTransform, spawnPos, gameObject.transform);
+                if (_playerTransform != null)
+                {
+                    if (Random.value > 0.5f)
+                    {
+                        IEnemy enemy = _bigEnemyFactory.CreateEnemy(_playerTransform, spawnPos, gameObject.transform);
+                    }
+                    else
+                    {
+                        IEnemy enemy = _fastEnemyFactory.CreateEnemy(_playerTransform, spawnPos, gameObject.transform);
+                    }
+                }
             }
-            else
+            catch (OperationCanceledException)
             {
-                IEnemy enemy = _fastEnemyFactory.CreateEnemy(_playerTransform, spawnPos, gameObject.transform);
+                Debug.Log("Spawner canceled");
             }
         }
+    }
+    
+    public void CancelToken()
+    {
+        _cancellationTokenSource?.Cancel(); 
     }
 }

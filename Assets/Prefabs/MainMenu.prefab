@@ -253,6 +253,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _startButton: {fileID: 8320612422869678803}
   _exitButton: {fileID: 7043813940048827014}
+  _scoreText: {fileID: 3839099586648351795}
 --- !u!225 &8284987247120715384
 CanvasGroup:
   m_ObjectHideFlags: 0

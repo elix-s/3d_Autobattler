@@ -38,6 +38,7 @@ namespace Common.GameStateService
 
         public async UniTask ChangeState<T>(StatePayload statePayload = null) where T : IGameState
         {
+            Debug.Log($"Changing state of type {typeof(T).Name}");
             if (!_states.TryGetValue(typeof(T), out var newState))
                 throw new ArgumentException($"State {typeof(T)} is not registered.");
             

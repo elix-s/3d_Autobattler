@@ -1,20 +1,20 @@
 using UnityEngine;
 using UnityEngine.AI;
+using VContainer;
 
+[RequireComponent(typeof(NavMeshAgent)), RequireComponent(typeof(Animator))]
 public class EnemyAI : MonoBehaviour, IEnemy
 {
-    private Transform _player;
-    private NavMeshAgent _agent;
-    private Animator _animator;
-
+    private const string RunParameter = "Run"; 
+    
     [SerializeField] private float _chaseDistance = 10f;
     [SerializeField] private float _stopDistance = 2f;
+    [SerializeField] private NavMeshAgent _agent;
+    [SerializeField] private Animator _animator;
+    private Transform _player;
     
     public void SetData(float speed)
     {
-        _agent = GetComponent<NavMeshAgent>();
-        _animator = GetComponent<Animator>();
-        
         _agent.updatePosition = false;
         _agent.updateRotation = false;
         _agent.speed = speed;
@@ -25,7 +25,7 @@ public class EnemyAI : MonoBehaviour, IEnemy
         _player = target;
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         FollowPlayer();
     }
@@ -39,22 +39,13 @@ public class EnemyAI : MonoBehaviour, IEnemy
         if (distance <= _chaseDistance)
         {
             _agent.SetDestination(_player.position);
-
-            if (distance <= _stopDistance)
-            {
-                _agent.isStopped = true;
-                _animator.SetBool("Run", false);
-            }
-            else
-            {
-                _agent.isStopped = false;
-                _animator.SetBool("Run", true);
-            }
+            _agent.isStopped = distance <= _stopDistance;
+            _animator.SetBool(RunParameter, distance > _stopDistance);
         }
         else
         {
             _agent.isStopped = true;
-            _animator.SetBool("Run", false);
+            _animator.SetBool(RunParameter, false);
         }
         
         transform.position = _agent.nextPosition;

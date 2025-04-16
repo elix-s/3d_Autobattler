@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Common.AssetsSystem;
 using Common.AudioService;
 using Common.GameStateService;
+using Common.SavingSystem;
 using Common.UIService;
 using VContainer;
 using VContainer.Unity;
@@ -19,6 +20,8 @@ public class GameLifetimeScope : LifetimeScope
         builder.Register<UIService>(Lifetime.Singleton);
         builder.Register<AudioService>(Lifetime.Singleton);
         builder.Register<GameSessionService>(Lifetime.Singleton);
+        builder.Register<EventsDispatcher>(Lifetime.Singleton);
+        builder.Register<SavingSystem>(Lifetime.Singleton);
         
         //providers
         builder.Register<IAssetProvider, AssetProvider>(Lifetime.Transient);

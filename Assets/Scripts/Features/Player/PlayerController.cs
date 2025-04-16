@@ -1,26 +1,28 @@
 using Common.GameStateService;
+using Common.SavingSystem;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer;
 
-[RequireComponent(typeof(Rigidbody), typeof(Animator))]
+[RequireComponent(typeof(Rigidbody), typeof(Animator)), RequireComponent(typeof(CapsuleCollider))]
 public class PlayerController : MonoBehaviour
 {
     private const string HorizontalAxis = "Horizontal";
     private const string VerticalAxis = "Vertical";
     private const string RunParameter = "Run"; 
-    private const string DeathTrigger = "Die";    
     private const string EnemyLayer = "Enemy";
 
     [Header("Dependencies")]
     [SerializeField] private GameObject _explosionEffect;
     [SerializeField] private ForceField _forceField; 
-    [SerializeField] private Transform _cameraTransform; 
+    [SerializeField] private Transform _cameraTransform;
+    [SerializeField] private EnemySpawner _spawner;
 
     [Header("Movement Settings")]
     [SerializeField] private float _moveSpeed = 5f;         
     [SerializeField] private float _rotationSpeed = 15f;    
-    [SerializeField] private float _moveThreshold = 0.1f;   
+    [SerializeField] private float _moveThreshold = 0.1f; 
+    [SerializeField] private float _rotationThreshold = 10f;
 
     [Header("Ground Check")]
     [SerializeField] private Transform _groundCheckPoint;   
@@ -30,9 +32,11 @@ public class PlayerController : MonoBehaviour
     [Header("Components")]
     [SerializeField] private Rigidbody _rb;
     [SerializeField] private Animator _animator;
+    [SerializeField] private CapsuleCollider _capsuleCollider;
     
     private GameSessionService _gameSessionService;
     private GameStateService _gameStateService;
+    private SavingSystem _savingSystem;
     
     private Vector3 _inputDirection = Vector3.zero;     
     private Vector3 _worldMoveDirection = Vector3.zero; 
@@ -40,29 +44,32 @@ public class PlayerController : MonoBehaviour
     private bool _isDead = false;
 
     [Inject]
-    public void Construct(GameSessionService gameSessionService, GameStateService gameStateService)
+    public void Construct(GameSessionService gameSessionService, GameStateService gameStateService,
+        SavingSystem savingSystem)
     {
         _gameSessionService = gameSessionService;
         _gameStateService = gameStateService;
+        _savingSystem = savingSystem;
     }
 
     private void Awake()
     {
         if (_rb == null) Debug.LogError("Rigidbody not found on Player", this);
         if (_animator == null) Debug.LogError("Animator not found on Player", this);
-        if (_cameraTransform == null) Debug.LogError("Camera Transform not assigned. Movement will be world-based.", this);
+        if (_cameraTransform == null) Debug.LogError("Camera Transform not assigned.", this);
+        
         if (_groundCheckPoint == null)
         {
              Debug.LogWarning("Ground Check Point not assigned, creating one at player's base.", this);
              _groundCheckPoint = new GameObject("GroundCheckPoint").transform;
              _groundCheckPoint.SetParent(transform);
-             Collider col = GetComponent<Collider>();
-             _groundCheckPoint.localPosition = col != null ? Vector3.down * col.bounds.extents.y : Vector3.zero;
+             _groundCheckPoint.localPosition = _capsuleCollider != null ? 
+                 Vector3.down * _capsuleCollider.bounds.extents.y : Vector3.zero;
         }
         
         if (!_rb.isKinematic)
         {
-            Debug.LogWarning("Rigidbody is not set to Kinematic. MovePosition might behave unexpectedly. Consider unchecking IsKinematic if physics interaction is desired.", this);
+            Debug.LogWarning("Rigidbody is not set to Kinematic.", this);
         }
     }
 
@@ -89,7 +96,6 @@ public class PlayerController : MonoBehaviour
             cameraRight.y = 0;
             cameraForward.Normalize();
             cameraRight.Normalize();
-            
             _worldMoveDirection = (cameraForward * _inputDirection.z + cameraRight * _inputDirection.x).normalized;
         }
         else
@@ -114,17 +120,9 @@ public class PlayerController : MonoBehaviour
         {
             Quaternion targetRotation = Quaternion.LookRotation(_worldMoveDirection);
             Quaternion newRotation = Quaternion.RotateTowards(_rb.rotation, targetRotation, 
-                _rotationSpeed * Time.fixedDeltaTime * 25f);
+                _rotationSpeed * Time.fixedDeltaTime * _rotationThreshold);
             _rb.MoveRotation(newRotation); 
         }
-        
-        /*
-        if (_worldMoveDirection.magnitude > 0.1f)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(_worldMoveDirection);
-            _rb.rotation = Quaternion.Lerp(_rb.rotation, targetRotation, _rotationSpeed * Time.fixedDeltaTime);
-        }
-        */
     }
 
     private void CheckGroundStatus()
@@ -142,29 +140,40 @@ public class PlayerController : MonoBehaviour
             _isDead = true;
             _gameSessionService.GameStarted = false;
             
-            var effect = Instantiate(_explosionEffect, other.ClosestPoint(transform.position), Quaternion.identity);
-            Destroy(effect, 2.0f); 
             gameObject.SetActive(false);
+            var effect = Instantiate(_explosionEffect, other.ClosestPoint(transform.position), Quaternion.identity);
             _forceField.CancelToken();
+            _spawner.CancelToken();
+            Destroy(effect, 1.0f);
+
+            var data = await _savingSystem.LoadDataAsync<AppData>();
+
+            if (data.BestResult  < _gameSessionService.UserScore)
+            {
+                data.BestResult = _gameSessionService.UserScore;
+                _savingSystem.SaveDataAsync(data).Forget();
+            }
+
+            _gameSessionService.UserScore = 0;
             
-            await UniTask.Delay(2000);
+            await UniTask.Delay(1000);
             _gameStateService.ChangeState<MenuState>().Forget();
         }
     }
     
-     void OnDrawGizmosSelected()
-     {
-         if (_groundCheckPoint != null)
-         {
-             Gizmos.color = Color.yellow;
-             Gizmos.DrawWireSphere(_groundCheckPoint.position, _groundCheckRadius);
-         }
+    private void OnDrawGizmosSelected()
+    {
+        if (_groundCheckPoint != null)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(_groundCheckPoint.position, _groundCheckRadius);
+        }
          
-         if (Application.isPlaying && !_isDead)
-         {
-             Gizmos.color = Color.blue;
-             Gizmos.DrawRay(transform.position + Vector3.up * 0.1f, 
+        if (Application.isPlaying && !_isDead)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawRay(transform.position + Vector3.up * 0.1f, 
                  _worldMoveDirection * _moveSpeed * 0.2f); 
-         }
-     }
+        }
+    }
 }

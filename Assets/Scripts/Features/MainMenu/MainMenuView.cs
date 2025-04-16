@@ -1,6 +1,7 @@
 using Common.GameStateService;
-using Common.UIService;
+using Common.SavingSystem;
 using Cysharp.Threading.Tasks;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,26 +11,30 @@ public class MainMenuView : MonoBehaviour
 {
     [SerializeField] private Button _startButton;
     [SerializeField] private Button _exitButton;
+    [SerializeField] private TextMeshProUGUI _scoreText;
     
     private GameStateService _gameStateService;
-    private UIService _uiService;
-
+    private SavingSystem _savingSystem;
+    
     [Inject]
-    private void Construct(GameStateService gameStateService, UIService uiService)
+    private void Construct(GameStateService gameStateService, SavingSystem savingSystem)
     {
         _gameStateService = gameStateService;
-        _uiService = uiService;
+        _savingSystem = savingSystem;
     }
 
-    private void Awake()
+    private async void Awake()
     {
-        _startButton.onClick.AddListener(()=> StartGame());
-        _exitButton.onClick.AddListener(()=> Exit());
+        _startButton.onClick.AddListener(StartGame);
+        _exitButton.onClick.AddListener(Exit);
+
+        var data = await _savingSystem.LoadDataAsync<AppData>();
+        var bestResult = data.BestResult;
+        _scoreText.text = "Best Result: " + bestResult.ToString();
     }
 
-    private async void StartGame()
+    private void StartGame()
     {
-        await UniTask.Delay(200);
         _gameStateService.ChangeState<StartGameState>().Forget();
     }
 

@@ -16,6 +16,8 @@ public class MenuState : IGameState
     private readonly IAssetProvider _assetProvider;
     private IAssetUnloader _assetUnloader;
     
+    private bool _isInitialized = false;
+    
     public MenuState(Logger logger, SceneLoader sceneLoader, UIService uiService, AudioService audioService, IObjectResolver container, 
         IAssetProvider assetProvider, IAssetUnloader assetUnloader)
     {
@@ -39,6 +41,9 @@ public class MenuState : IGameState
         _assetUnloader.AddResource(panel);
         _assetUnloader.AttachInstance(prefab);
         _assetUnloader.AttachInstance(mainMenu.gameObject);
+        Debug.Log("анлоадер готов");
+        
+        _isInitialized = true;
     }
     
     public void Update()
@@ -48,6 +53,8 @@ public class MenuState : IGameState
 
     public async UniTask Exit()
     {
+        //await UniTask.WaitUntil(() => _isInitialized);
+        Debug.Log("Dispose");
         _assetUnloader.Dispose();
     }
 }

@@ -105,7 +105,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4215191051171316688}
   - component: {fileID: 263712451170127150}
-  - component: {fileID: 9117395798289962351}
   - component: {fileID: 7922585150214157082}
   - component: {fileID: 2916027433279941324}
   m_Layer: 0
@@ -181,14 +180,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &9117395798289962351
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 284331622307981874}
-  m_Enabled: 1
 --- !u!114 &7922585150214157082
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -247,12 +238,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _target: {fileID: 4926184681032082467}
   _lookAtOffset: {x: 0, y: 1.5, z: 0}
-  _followSmoothTime: 0.5
+  _followSmoothTime: 0.3
   _initialOffset: {x: 0, y: 5, z: -7}
   _enableRotation: 1
   _rotateMouseButton: 1
-  _rotationSpeedX: 4
-  _rotationSpeedY: 2
+  _rotationSpeedX: 8
+  _rotationSpeedY: 4
   _minPitch: -30
   _maxPitch: 70
   _enableZoom: 1
@@ -1190,9 +1181,11 @@ MonoBehaviour:
     type: 3}
   _forceField: {fileID: 2442011358590358228}
   _cameraTransform: {fileID: 4215191051171316688}
+  _spawner: {fileID: 3573287557691729447}
   _moveSpeed: 7
   _rotationSpeed: 15
   _moveThreshold: 0.1
+  _rotationThreshold: 15
   _groundCheckPoint: {fileID: 0}
   _groundCheckRadius: 0.2
   _groundLayers:
@@ -1200,6 +1193,7 @@ MonoBehaviour:
     m_Bits: 128
   _rb: {fileID: 4017602175641994691}
   _animator: {fileID: 2492586669273457436}
+  _capsuleCollider: {fileID: 3673590196418943876}
 --- !u!54 &4017602175641994691
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1890,6 +1884,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1237025144117751859}
+  - component: {fileID: 8695331779186888418}
   m_Layer: 0
   m_Name: GameState
   m_TagString: Untagged
@@ -1916,6 +1911,23 @@ Transform:
   - {fileID: 6148258661086541633}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8695331779186888418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6147388402456584161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82401cf60aec06b4fab5787b7bcfdc90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentReference:
+    TypeName: GameLifetimeScope
+  autoRun: 0
+  autoInjectGameObjects:
+  - {fileID: 5409494476316925067}
 --- !u!1 &6348028638746362283
 GameObject:
   m_ObjectHideFlags: 0

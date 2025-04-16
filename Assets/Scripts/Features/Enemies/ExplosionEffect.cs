@@ -3,7 +3,7 @@ using UnityEngine;
 public class ExplosionEffect : MonoBehaviour
 {
     [SerializeField] private Rigidbody[] _cubes;
-    [SerializeField] private float _explosionForce = 10f; 
+    [SerializeField] private float _explosionForce = 8f; 
     [SerializeField] private float _explosionRadius = 5f; 
     [SerializeField] private float _upwardModifier = 1f; 
     [SerializeField] private float _destructionDelay = 3f; 
@@ -13,7 +13,7 @@ public class ExplosionEffect : MonoBehaviour
         Explode();
     }
 
-    public void Explode()
+    private void Explode()
     {
         foreach (Rigidbody cube in _cubes)
         {

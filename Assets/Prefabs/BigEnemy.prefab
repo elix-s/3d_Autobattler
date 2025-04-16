@@ -881,6 +881,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _chaseDistance: 20
   _stopDistance: 0.1
+  _agent: {fileID: 6843957158975887}
+  _animator: {fileID: 5507887380702405742}
 --- !u!114 &7654841008535438462
 MonoBehaviour:
   m_ObjectHideFlags: 0

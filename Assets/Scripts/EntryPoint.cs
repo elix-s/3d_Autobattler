@@ -1,5 +1,6 @@
 using Common.GameStateService;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 using VContainer.Unity;
 
 public class EntryPoint : IStartable
@@ -13,6 +14,7 @@ public class EntryPoint : IStartable
    
    public void Start()
    {
+      Debug.Log("Start");
       _stateMachine.ChangeState<StartLoadingState>().Forget();
    }
 }

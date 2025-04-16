@@ -1,9 +1,9 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UIElements;
+using VContainer;
 
 public class ForceField : MonoBehaviour
 {
@@ -13,6 +13,16 @@ public class ForceField : MonoBehaviour
     
     private CancellationTokenSource _cancellationTokenSource;
     private bool _fieldIsActive = true;
+    
+    private GameSessionService _gameSessionService;
+    private EventsDispatcher _eventDispatcher;
+
+    [Inject]
+    private void Construct(GameSessionService gameSessionService, EventsDispatcher eventDispatcher)
+    {
+        _gameSessionService = gameSessionService;
+        _eventDispatcher = eventDispatcher;
+    }
     
     private void OnTriggerEnter(Collider other)
     {
@@ -36,22 +46,31 @@ public class ForceField : MonoBehaviour
         }
     }
 
-    private async void CollisionCheck(Collider collider)
+    private void CollisionCheck(Collider collider)
     {
         _fieldIsActive = false;
-                
-        if(collider.gameObject.GetComponent<FastEnemy>() != null) 
+
+        if (collider.gameObject.GetComponent<FastEnemy>() != null)
+        {
             SpawnExplosion(_explosionEffect_FastEnemy,collider.ClosestPoint(transform.position));
-        else if(collider.gameObject.GetComponent<BigEnemy>() != null)
+        }
+        else if (collider.gameObject.GetComponent<BigEnemy>() != null)
+        {
             SpawnExplosion(_explosionEffect_BigEnemy,collider.ClosestPoint(transform.position));
-                
+        }
+        
+        _gameSessionService.IncreaceScores(10); 
+        var e = _eventDispatcher.GameDispatcher.Get<IncreaseScoreEvent>();
+        e.SetScore(_gameSessionService.UserScore);
+       _eventDispatcher.GameDispatcher.Invoke(e).Forget();
+        
         Destroy(collider.gameObject);
         _meshRenderer.enabled = false;
 
         _cancellationTokenSource?.Cancel(); 
         _cancellationTokenSource = new CancellationTokenSource();
 
-        await StartTimer(_cancellationTokenSource.Token);
+        StartTimer(_cancellationTokenSource.Token).Forget();
     }
     
     private async UniTask StartTimer(CancellationToken token)
@@ -68,7 +87,7 @@ public class ForceField : MonoBehaviour
         }
         catch (OperationCanceledException)
         {
-            Debug.Log("Таймер сброшен");
+            Debug.Log("Timer canceled");
         }
     }
 
