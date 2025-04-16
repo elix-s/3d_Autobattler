@@ -10,7 +10,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private Transform _playerTransform;
     [SerializeField] private GameObject _bigEnemyPrefab;
     [SerializeField] private GameObject _fastEnemyPrefab;
-    [SerializeField] private int _spawnInterval = 3000;
+    [SerializeField] private int _spawnInterval = 2000;
 
     private BigEnemyFactory _bigEnemyFactory;
     private FastEnemyFactory _fastEnemyFactory;

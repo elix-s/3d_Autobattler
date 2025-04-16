@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.AI;
-using VContainer;
 
 [RequireComponent(typeof(NavMeshAgent)), RequireComponent(typeof(Animator))]
 public class EnemyAI : MonoBehaviour, IEnemy

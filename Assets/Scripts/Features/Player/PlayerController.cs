@@ -67,17 +67,13 @@ public class PlayerController : MonoBehaviour
                  Vector3.down * _capsuleCollider.bounds.extents.y : Vector3.zero;
         }
         
-        if (!_rb.isKinematic)
-        {
-            Debug.LogWarning("Rigidbody is not set to Kinematic.", this);
-        }
+        _rb.freezeRotation = true;
+        _isDead = false;
     }
 
     private void Start()
     {
-        _rb.freezeRotation = true;
         _gameSessionService.GameStarted = true;
-        _isDead = false;
     }
 
     private void Update()
@@ -131,7 +127,7 @@ public class PlayerController : MonoBehaviour
             _groundLayers, QueryTriggerInteraction.Ignore);
     }
 
-    private async void OnTriggerEnter(Collider other)
+    private async void OnCollisionEnter(Collision other)
     {
         if (_isDead) return;
 
@@ -139,26 +135,31 @@ public class PlayerController : MonoBehaviour
         {
             _isDead = true;
             _gameSessionService.GameStarted = false;
-            
             gameObject.SetActive(false);
-            var effect = Instantiate(_explosionEffect, other.ClosestPoint(transform.position), Quaternion.identity);
             _forceField.CancelToken();
             _spawner.CancelToken();
+            
+            var effect = Instantiate(_explosionEffect, other.contacts[0].point, Quaternion.identity);
             Destroy(effect, 1.0f);
 
-            var data = await _savingSystem.LoadDataAsync<AppData>();
-
-            if (data.BestResult  < _gameSessionService.UserScore)
-            {
-                data.BestResult = _gameSessionService.UserScore;
-                _savingSystem.SaveDataAsync(data).Forget();
-            }
-
-            _gameSessionService.UserScore = 0;
+            await SaveUserScore();
             
             await UniTask.Delay(1000);
             _gameStateService.ChangeState<MenuState>().Forget();
         }
+    }
+
+    private async UniTask SaveUserScore()
+    {
+        var data = await _savingSystem.LoadDataAsync<AppData>();
+
+        if (data.BestResult < _gameSessionService.UserScore)
+        {
+            data.BestResult = _gameSessionService.UserScore;
+            _savingSystem.SaveDataAsync(data).Forget();
+        }
+
+        _gameSessionService.UserScore = 0;
     }
     
     private void OnDrawGizmosSelected()
