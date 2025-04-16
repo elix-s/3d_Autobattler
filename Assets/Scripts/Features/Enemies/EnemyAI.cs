@@ -4,16 +4,40 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent)), RequireComponent(typeof(Animator))]
 public class EnemyAI : MonoBehaviour, IEnemy
 {
-    private const string RunParameter = "Run"; 
-    
+    private const string RunParameter = "Run";
+
+    [Header("Movement Settings")]
     [SerializeField] private float _chaseDistance = 10f;
     [SerializeField] private float _stopDistance = 2f;
-    [SerializeField] private NavMeshAgent _agent;
-    [SerializeField] private Animator _animator;
+    [SerializeField] private float _rotationSpeed = 10f; 
+    
+    private NavMeshAgent _agent;
+    private Animator _animator;
+    private Transform _cachedTransform; 
+    
     private Transform _player;
     
+    private float _chaseDistanceSqr;
+    private float _stopDistanceSqr;
+
+    private void Awake()
+    {
+        _agent = GetComponent<NavMeshAgent>();
+        _animator = GetComponent<Animator>();
+        _cachedTransform = transform; 
+        
+        _chaseDistanceSqr = _chaseDistance * _chaseDistance;
+        _stopDistanceSqr = _stopDistance * _stopDistance;
+    }
+
     public void SetData(float speed)
     {
+        if (_agent == null)
+        {
+            Debug.LogError("NavMeshAgent not found");
+            return;
+        }
+        
         _agent.updatePosition = false;
         _agent.updateRotation = false;
         _agent.speed = speed;
@@ -23,7 +47,7 @@ public class EnemyAI : MonoBehaviour, IEnemy
     {
         _player = target;
     }
-
+    
     private void FixedUpdate()
     {
         FollowPlayer();
@@ -31,23 +55,43 @@ public class EnemyAI : MonoBehaviour, IEnemy
 
     public void FollowPlayer()
     {
-        if (_player == null) return;
-
-        float distance = Vector3.Distance(transform.position, _player.position);
-
-        if (distance <= _chaseDistance)
+        if (_player == null)
+        {
+             if (!_agent.isStopped)
+             {
+                 _agent.isStopped = true;
+                 _animator.SetBool(RunParameter, false);
+             }
+             
+            return;
+        }
+        
+        Vector3 directionToPlayer = _player.position - _cachedTransform.position;
+        float distanceSqr = directionToPlayer.sqrMagnitude; 
+        
+        if (distanceSqr <= _chaseDistanceSqr)
         {
             _agent.SetDestination(_player.position);
-            _agent.isStopped = distance <= _stopDistance;
-            _animator.SetBool(RunParameter, distance > _stopDistance);
+
+            bool shouldStop = distanceSqr <= _stopDistanceSqr;
+            _agent.isStopped = shouldStop;
+            _animator.SetBool(RunParameter, !shouldStop); 
         }
         else
         {
-            _agent.isStopped = true;
-            _animator.SetBool(RunParameter, false);
+            if (!_agent.isStopped) 
+            {
+                _agent.isStopped = true;
+                _animator.SetBool(RunParameter, false);
+            }
         }
         
-        transform.position = _agent.nextPosition;
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(_agent.velocity.normalized), Time.deltaTime * 10f);
+        _cachedTransform.position = _agent.nextPosition;
+        
+        if (_agent.velocity.sqrMagnitude > 0.01f) 
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(_agent.velocity.normalized);
+            _cachedTransform.rotation = Quaternion.Lerp(_cachedTransform.rotation, lookRotation, Time.deltaTime * _rotationSpeed);
+        }
     }
 }
