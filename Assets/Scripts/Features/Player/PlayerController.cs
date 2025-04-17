@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
     [Header("Dependencies")]
     [SerializeField] private GameObject _explosionEffect;
     [SerializeField] private ForceField _forceField; 
-    [SerializeField] private Transform _cameraTransform;
+    [SerializeField] private GameCamera _camera;
     [SerializeField] private EnemySpawner _spawner;
 
     [Header("Movement Settings")]
@@ -60,7 +60,7 @@ public class PlayerController : MonoBehaviour
     {
         if (_rb == null) Debug.LogError("Rigidbody not found on Player", this);
         if (_animator == null) Debug.LogError("Animator not found on Player", this);
-        if (_cameraTransform == null) Debug.LogError("Camera Transform not assigned.", this);
+        if (_camera == null) Debug.LogError("Camera Transform not assigned.", this);
         
         if (_groundCheckPoint == null)
         {
@@ -87,10 +87,10 @@ public class PlayerController : MonoBehaviour
         float moveZ = Input.GetAxisRaw(VerticalAxis);
         _inputDirection = new Vector3(moveX, 0, moveZ).normalized;
         
-        if (_cameraTransform != null)
+        if (_camera != null)
         {
-            Vector3 cameraForward = _cameraTransform.forward;
-            Vector3 cameraRight = _cameraTransform.right;
+            Vector3 cameraForward = _camera.transform.forward;
+            Vector3 cameraRight = _camera.transform.right;
             cameraForward.y = 0; 
             cameraRight.y = 0;
             cameraForward.Normalize();
@@ -147,7 +147,8 @@ public class PlayerController : MonoBehaviour
         gameObject.SetActive(false);
         _forceField.CancelToken();
         _spawner.CancelToken();
-            
+        
+        _camera.ShakeCamera(0.75f, 0.2f).Forget();
         var effect = Instantiate(_explosionEffect, other.contacts[0].point, Quaternion.identity);
         Destroy(effect, 1.0f);
 

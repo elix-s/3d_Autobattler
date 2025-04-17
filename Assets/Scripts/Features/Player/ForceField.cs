@@ -11,6 +11,7 @@ public class ForceField : MonoBehaviour
     [SerializeField] private MeshRenderer _meshRenderer;
     [SerializeField] private GameObject _explosionEffect_FastEnemy;
     [SerializeField] private GameObject _explosionEffect_BigEnemy;
+    [SerializeField] private GameCamera _camera;
     
     private CancellationTokenSource _cancellationTokenSource;
     private bool _fieldIsActive = true;
@@ -50,6 +51,7 @@ public class ForceField : MonoBehaviour
     private void CollisionCheck(Collider collider)
     {
         _fieldIsActive = false;
+        _camera.ShakeCamera(0.5f, 0.1f).Forget();
 
         if (collider.gameObject.GetComponent<FastEnemy>() != null)
         {

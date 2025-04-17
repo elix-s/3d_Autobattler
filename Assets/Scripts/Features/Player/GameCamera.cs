@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class GameCamera : MonoBehaviour
@@ -173,6 +174,25 @@ public class GameCamera : MonoBehaviour
               Cursor.lockState = CursorLockMode.None;
               Cursor.visible = true;
          }
+     }
+     
+     public async UniTask ShakeCamera(float duration, float magnitude)
+     {
+         var originalPosition = transform.localPosition;
+         float elapsed = 0f;
+
+         while (elapsed < duration)
+         {
+             float offsetX = Random.Range(-1f, 1f) * magnitude;
+             float offsetY = Random.Range(-1f, 1f) * magnitude;
+
+             transform.localPosition = originalPosition + new Vector3(offsetX, offsetY, 0);
+
+             elapsed += Time.deltaTime;
+             await UniTask.Yield();
+         }
+
+         transform.localPosition = originalPosition;
      }
      
     private void OnDrawGizmosSelected()

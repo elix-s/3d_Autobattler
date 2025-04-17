@@ -9,7 +9,8 @@ public class EnemyAI : MonoBehaviour, IEnemy
     [Header("Movement Settings")]
     [SerializeField] private float _chaseDistance = 10f;
     [SerializeField] private float _stopDistance = 2f;
-    [SerializeField] private float _rotationSpeed = 10f; 
+    [SerializeField] private float _rotationSpeed = 10f;
+    [SerializeField] private float _destinationUpdateRate = 0.2f;
     
     private NavMeshAgent _agent;
     private Animator _animator;
@@ -19,6 +20,7 @@ public class EnemyAI : MonoBehaviour, IEnemy
     
     private float _chaseDistanceSqr;
     private float _stopDistanceSqr;
+    private float _timeSinceLastSet = 0f;
 
     private void Awake()
     {
@@ -50,7 +52,13 @@ public class EnemyAI : MonoBehaviour, IEnemy
     
     private void FixedUpdate()
     {
-        FollowPlayer();
+        _timeSinceLastSet += Time.fixedDeltaTime;
+        
+        if (_timeSinceLastSet > _destinationUpdateRate)
+        {
+            _timeSinceLastSet = 0f;
+            FollowPlayer();
+        }
     }
 
     public void FollowPlayer()
@@ -75,7 +83,7 @@ public class EnemyAI : MonoBehaviour, IEnemy
 
             bool shouldStop = distanceSqr <= _stopDistanceSqr;
             _agent.isStopped = shouldStop;
-            _animator.SetBool(RunParameter, !shouldStop); 
+            _animator.SetBool(RunParameter, !shouldStop);
         }
         else
         {
@@ -91,7 +99,7 @@ public class EnemyAI : MonoBehaviour, IEnemy
         if (_agent.velocity.sqrMagnitude > 0.01f) 
         {
             Quaternion lookRotation = Quaternion.LookRotation(_agent.velocity.normalized);
-            _cachedTransform.rotation = Quaternion.Lerp(_cachedTransform.rotation, lookRotation, Time.deltaTime * _rotationSpeed);
+            _cachedTransform.rotation = Quaternion.Lerp(_cachedTransform.rotation, lookRotation, Time.fixedDeltaTime * _rotationSpeed);
         }
     }
 }
