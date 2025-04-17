@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
+using Features.AppData;
 
 public class MainMenuView : MonoBehaviour
 {

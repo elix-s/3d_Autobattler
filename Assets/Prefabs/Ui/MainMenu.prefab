@@ -74,8 +74,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4280648686
+  m_fontColor: {r: 0.93207544, g: 0.51544, b: 0.14596646, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -563,6 +563,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: MenuButton
       objectReference: {fileID: 0}
+    - target: {fileID: 6411427733103717709, guid: f5ed49c4c3a6f3f46a16f1d8b69b5d6a,
+        type: 3}
+      propertyPath: _enableDelay
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6411427733103717709, guid: f5ed49c4c3a6f3f46a16f1d8b69b5d6a,
+        type: 3}
+      propertyPath: _enablePulseAnimation
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6600495234483506382, guid: f5ed49c4c3a6f3f46a16f1d8b69b5d6a,
         type: 3}
       propertyPath: showPulseAnimation
@@ -708,6 +718,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: MenuButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 6411427733103717709, guid: f5ed49c4c3a6f3f46a16f1d8b69b5d6a,
+        type: 3}
+      propertyPath: _delay
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6411427733103717709, guid: f5ed49c4c3a6f3f46a16f1d8b69b5d6a,
+        type: 3}
+      propertyPath: _enableDelay
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

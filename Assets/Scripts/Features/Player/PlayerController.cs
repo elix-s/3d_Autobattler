@@ -3,6 +3,8 @@ using Common.SavingSystem;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer;
+using Features.AppData;
+using Features.GameSessionService;
 
 [RequireComponent(typeof(Rigidbody), typeof(Animator)), RequireComponent(typeof(CapsuleCollider))]
 public class PlayerController : MonoBehaviour
@@ -11,6 +13,7 @@ public class PlayerController : MonoBehaviour
     private const string VerticalAxis = "Vertical";
     private const string RunParameter = "Run"; 
     private const string EnemyLayer = "Enemy";
+    private const string DeadZoneLayer = "DeadZone";
 
     [Header("Dependencies")]
     [SerializeField] private GameObject _explosionEffect;
@@ -39,7 +42,8 @@ public class PlayerController : MonoBehaviour
     private SavingSystem _savingSystem;
     
     private Vector3 _inputDirection = Vector3.zero;     
-    private Vector3 _worldMoveDirection = Vector3.zero; 
+    private Vector3 _worldMoveDirection = Vector3.zero;
+    private Vector3 _groundPosition = Vector3.zero;
     private bool _isGrounded = false;
     private bool _isDead = false;
 
@@ -63,8 +67,7 @@ public class PlayerController : MonoBehaviour
              Debug.LogWarning("Ground Check Point not assigned, creating one at player's base.", this);
              _groundCheckPoint = new GameObject("GroundCheckPoint").transform;
              _groundCheckPoint.SetParent(transform);
-             _groundCheckPoint.localPosition = _capsuleCollider != null ? 
-                 Vector3.down * _capsuleCollider.bounds.extents.y : Vector3.zero;
+             _groundCheckPoint.localPosition = _groundPosition;
         }
         
         _rb.freezeRotation = true;
@@ -98,10 +101,9 @@ public class PlayerController : MonoBehaviour
         {
             _worldMoveDirection = _inputDirection;
         }
-        
-        _animator.SetBool(RunParameter, (_worldMoveDirection.magnitude > 0.1f));
-        
+
         CheckGroundStatus();
+        _animator.SetBool(RunParameter, (_worldMoveDirection.magnitude > 0.1f && _isGrounded));
     }
 
     private void FixedUpdate()
@@ -127,26 +129,32 @@ public class PlayerController : MonoBehaviour
             _groundLayers, QueryTriggerInteraction.Ignore);
     }
 
-    private async void OnCollisionEnter(Collision other)
+    private void OnCollisionEnter(Collision other)
     {
         if (_isDead) return;
 
-        if (other.gameObject.layer == LayerMask.NameToLayer(EnemyLayer))
+        if (other.gameObject.layer == LayerMask.NameToLayer(EnemyLayer) || 
+            other.gameObject.layer == LayerMask.NameToLayer(DeadZoneLayer))
         {
-            _isDead = true;
-            _gameSessionService.GameStarted = false;
-            gameObject.SetActive(false);
-            _forceField.CancelToken();
-            _spawner.CancelToken();
-            
-            var effect = Instantiate(_explosionEffect, other.contacts[0].point, Quaternion.identity);
-            Destroy(effect, 1.0f);
-
-            await SaveUserScore();
-            
-            await UniTask.Delay(1000);
-            _gameStateService.ChangeState<MenuState>().Forget();
+            Loss(other).Forget();
         }
+    }
+
+    private async UniTask Loss(Collision other)
+    {
+        _isDead = true;
+        _gameSessionService.GameStarted = false;
+        gameObject.SetActive(false);
+        _forceField.CancelToken();
+        _spawner.CancelToken();
+            
+        var effect = Instantiate(_explosionEffect, other.contacts[0].point, Quaternion.identity);
+        Destroy(effect, 1.0f);
+
+        await SaveUserScore();
+            
+        await UniTask.Delay(1000);
+        _gameStateService.ChangeState<MenuState>().Forget();
     }
 
     private async UniTask SaveUserScore()

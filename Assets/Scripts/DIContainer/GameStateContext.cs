@@ -1,4 +1,8 @@
-public class GameStateContext : GameLifetimeScope
+namespace DIContainer
 {
+    public class GameStateContext : GameLifetimeScope
+    {
    
+    }
 }
+

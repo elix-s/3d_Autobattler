@@ -41,7 +41,6 @@ public class MenuState : IGameState
         _assetUnloader.AddResource(panel);
         _assetUnloader.AttachInstance(prefab);
         _assetUnloader.AttachInstance(mainMenu.gameObject);
-        Debug.Log("анлоадер готов");
         
         _isInitialized = true;
     }
@@ -53,8 +52,6 @@ public class MenuState : IGameState
 
     public async UniTask Exit()
     {
-        //await UniTask.WaitUntil(() => _isInitialized);
-        Debug.Log("Dispose");
         _assetUnloader.Dispose();
     }
 }

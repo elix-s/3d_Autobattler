@@ -1,3 +1,4 @@
+using Features.EventDispatcher;
 public class IncreaseScoreEvent : EventsDispatcher.IGameEvent
 {
     public int Score { get; set; }

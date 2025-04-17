@@ -1,10 +1,14 @@
-public class GameSessionService
+namespace Features.GameSessionService
 {
-    public bool GameStarted { get; set; } = false;
-    public int UserScore { get; set; } = 0;
-
-    public void IncreaceScores(int value)
+    public class GameSessionService
     {
-        UserScore += value;
+        public bool GameStarted { get; set; } = false;
+        public int UserScore { get; set; } = 0;
+
+        public void IncreaceScores(int value)
+        {
+            UserScore += value;
+        }
     }
 }
+

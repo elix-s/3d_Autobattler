@@ -2095,7 +2095,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: c85fcac9ca940784cb244fda1875d908, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 5b6fdd226d909fc4ea4d907c6a932136, type: 2}
   m_BuildHeightMesh: 0
 --- !u!65 &5499141279835833894
 BoxCollider:
@@ -2150,6 +2150,59 @@ Transform:
   - {fileID: 2749430799298514641}
   m_Father: {fileID: 1382486172372100951}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3543601743789236468
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5993802201911650963}
+  - component: {fileID: 6670228084391678633}
+  m_Layer: 8
+  m_Name: DeadZoneCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5993802201911650963
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3543601743789236468}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1.7, y: -5.6, z: -6.4}
+  m_LocalScale: {x: 100, y: 1, z: 100}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1237025144117751859}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &6670228084391678633
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3543601743789236468}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3748010747676842522
 GameObject:
   m_ObjectHideFlags: 0
@@ -2956,6 +3009,7 @@ MonoBehaviour:
   _fastEnemyPrefab: {fileID: 4543158271516446837, guid: 268c0d0fc5c6da0429cc674af2d7f76a,
     type: 3}
   _spawnInterval: 2000
+  _minSpawnDistance: 9
 --- !u!1 &5547831833454920034
 GameObject:
   m_ObjectHideFlags: 0
@@ -3320,6 +3374,7 @@ Transform:
   - {fileID: 4215191051171316688}
   - {fileID: 6148258661086541633}
   - {fileID: 8536513733066544428}
+  - {fileID: 5993802201911650963}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8695331779186888418

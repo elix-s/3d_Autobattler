@@ -1,7 +1,7 @@
-using System;
 using TMPro;
 using UnityEngine;
 using VContainer;
+using Features.EventDispatcher;
 
 public class GameMenuView : MonoBehaviour
 {
@@ -22,5 +22,10 @@ public class GameMenuView : MonoBehaviour
     private void SetScores(IncreaseScoreEvent e)
     {
         _scoresText.text = "Scores: " + e.Score.ToString();
+    }
+
+    private void OnDestroy()
+    {
+        _dispatcher.GameDispatcher.UnsubscribeListener<IncreaseScoreEvent>(this);
     }
 }

@@ -1244,8 +1244,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _chaseDistance: 20
   _stopDistance: 0.1
-  _agent: {fileID: 6764178755054996913}
-  _animator: {fileID: 5989906724839407687}
+  _rotationSpeed: 10
 --- !u!114 &2652845284333546517
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1259,7 +1258,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enemyAI: {fileID: 1668565341760806619}
-  _speed: 5
+  _speed: 6
   _target: {fileID: 0}
 --- !u!1 &4596933002929317737
 GameObject:

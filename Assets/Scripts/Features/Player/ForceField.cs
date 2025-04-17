@@ -2,8 +2,9 @@ using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.UIElements;
 using VContainer;
+using Features.EventDispatcher;
+using Features.GameSessionService;
 
 public class ForceField : MonoBehaviour
 {
@@ -59,18 +60,22 @@ public class ForceField : MonoBehaviour
             SpawnExplosion(_explosionEffect_BigEnemy,collider.ClosestPoint(transform.position));
         }
         
-        _gameSessionService.IncreaceScores(10); 
-        var e = _eventDispatcher.GameDispatcher.Get<IncreaseScoreEvent>();
-        e.SetScore(_gameSessionService.UserScore);
-       _eventDispatcher.GameDispatcher.Invoke(e).Forget();
+        IncreaseScores();
         
         Destroy(collider.gameObject);
         _meshRenderer.enabled = false;
-
         _cancellationTokenSource?.Cancel(); 
         _cancellationTokenSource = new CancellationTokenSource();
 
         StartTimer(_cancellationTokenSource.Token).Forget();
+    }
+
+    private void IncreaseScores()
+    {
+        _gameSessionService.IncreaceScores(10); 
+        var e = _eventDispatcher.GameDispatcher.Get<IncreaseScoreEvent>();
+        e.SetScore(_gameSessionService.UserScore);
+        _eventDispatcher.GameDispatcher.Invoke(e).Forget();
     }
     
     private async UniTask StartTimer(CancellationToken token)

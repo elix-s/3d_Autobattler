@@ -3,6 +3,7 @@ using System.Threading;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using VContainer;
+using Features.GameSessionService;
 using Random = UnityEngine.Random;
 
 public class EnemySpawner : MonoBehaviour
@@ -11,6 +12,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private GameObject _bigEnemyPrefab;
     [SerializeField] private GameObject _fastEnemyPrefab;
     [SerializeField] private int _spawnInterval = 2000;
+    [Range(2,9)][SerializeField] private float _minSpawnDistance = 9f;
 
     private BigEnemyFactory _bigEnemyFactory;
     private FastEnemyFactory _fastEnemyFactory;
@@ -41,8 +43,6 @@ public class EnemySpawner : MonoBehaviour
 
     private async void SpawnEnemies()
     {
-        float minSpawnDistance = 5f; 
-
         while (_gameSessionService.GameStarted)
         {
             try
@@ -52,8 +52,8 @@ public class EnemySpawner : MonoBehaviour
 
                 do
                 {
-                    spawnPos = new Vector3(Random.Range(-5f, 5f), 0, Random.Range(-5f, 5f));
-                } while (Vector3.Distance(spawnPos, _playerTransform.position) < minSpawnDistance);
+                    spawnPos = new Vector3(Random.Range(-10f, 10f), 0, Random.Range(-10f, 10f));
+                } while (Vector3.Distance(spawnPos, _playerTransform.position) < _minSpawnDistance);
 
                 if (_playerTransform != null)
                 {
