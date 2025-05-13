@@ -194,29 +194,4 @@ public class GameCamera : MonoBehaviour
 
          transform.localPosition = originalPosition;
      }
-     
-    private void OnDrawGizmosSelected()
-    {
-        if (_target != null)
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(GetLookAtPoint(), 0.1f); 
-            Gizmos.color = Color.blue;
-            Vector3 desiredPos = CalculateDesiredPosition();
-            Gizmos.DrawLine(GetLookAtPoint(), desiredPos); 
-            Gizmos.DrawWireSphere(desiredPos, 0.2f); 
-            
-            if (_handleCollisions && Application.isPlaying) 
-            {
-                 RaycastHit hit;
-                 
-                 if (Physics.Linecast(GetLookAtPoint(), desiredPos, out hit, _collisionLayers))
-                 {
-                     Gizmos.color = Color.red;
-                     Gizmos.DrawSphere(hit.point, 0.15f);
-                     Gizmos.DrawLine(hit.point, hit.point + hit.normal * 0.5f);
-                 }
-            }
-        }
-    }
 }

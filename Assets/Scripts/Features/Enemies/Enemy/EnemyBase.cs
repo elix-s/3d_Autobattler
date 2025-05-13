@@ -10,13 +10,5 @@ public class EnemyBase : MonoBehaviour, IEnemy
         _enemyAI.SetData(_speed);
     }
     
-    public void FollowPlayer()
-    {
-        _enemyAI.FollowPlayer();
-    }
-
-    private void FixedUpdate()
-    {
-        FollowPlayer();
-    }
+    public virtual void FollowPlayer(){}
 }

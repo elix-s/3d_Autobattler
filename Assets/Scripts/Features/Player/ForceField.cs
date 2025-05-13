@@ -3,11 +3,12 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer;
-using Features.EventDispatcher;
 using Features.GameSessionService;
 
 public class ForceField : MonoBehaviour
 {
+    private const string EnemyLayerName = "Enemy";
+    
     [SerializeField] private MeshRenderer _meshRenderer;
     [SerializeField] private GameObject _explosionEffect_FastEnemy;
     [SerializeField] private GameObject _explosionEffect_BigEnemy;
@@ -17,20 +18,18 @@ public class ForceField : MonoBehaviour
     private bool _fieldIsActive = true;
     
     private GameSessionService _gameSessionService;
-    private EventsDispatcher _eventDispatcher;
-
+    
     [Inject]
-    private void Construct(GameSessionService gameSessionService, EventsDispatcher eventDispatcher)
+    private void Construct(GameSessionService gameSessionService)
     {
         _gameSessionService = gameSessionService;
-        _eventDispatcher = eventDispatcher;
     }
     
     private void OnTriggerEnter(Collider other)
     {
         if (_fieldIsActive)
         {
-            if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+            if (other.gameObject.layer == LayerMask.NameToLayer(EnemyLayerName))
             {
                 CollisionCheck(other);
             }
@@ -41,7 +40,7 @@ public class ForceField : MonoBehaviour
     {
         if (_fieldIsActive)
         {
-            if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+            if (other.gameObject.layer == LayerMask.NameToLayer(EnemyLayerName))
             {
                 CollisionCheck(other);
             }
@@ -62,7 +61,7 @@ public class ForceField : MonoBehaviour
             SpawnExplosion(_explosionEffect_BigEnemy,collider.ClosestPoint(transform.position));
         }
         
-        IncreaseScores();
+        _gameSessionService.IncreaseScores(10); 
         
         Destroy(collider.gameObject);
         _meshRenderer.enabled = false;
@@ -70,14 +69,6 @@ public class ForceField : MonoBehaviour
         _cancellationTokenSource = new CancellationTokenSource();
 
         StartTimer(_cancellationTokenSource.Token).Forget();
-    }
-
-    private void IncreaseScores()
-    {
-        _gameSessionService.IncreaceScores(10); 
-        var e = _eventDispatcher.GameDispatcher.Get<IncreaseScoreEvent>();
-        e.SetScore(_gameSessionService.UserScore);
-        _eventDispatcher.GameDispatcher.Invoke(e).Forget();
     }
     
     private async UniTask StartTimer(CancellationToken token)

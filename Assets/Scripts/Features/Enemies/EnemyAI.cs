@@ -40,8 +40,6 @@ public class EnemyAI : MonoBehaviour, IEnemy
             return;
         }
         
-        _agent.updatePosition = false;
-        _agent.updateRotation = false;
         _agent.speed = speed;
     }
 

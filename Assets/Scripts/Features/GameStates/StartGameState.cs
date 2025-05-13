@@ -22,7 +22,8 @@ public class StartGameState : IGameState
     
     public async UniTask Enter(StatePayload payload)
     {
-        _uiService.ShowLoadingScreen(1500).Forget();
+        var transition = await _uiService.ShowUIPanelWithComponent<StateTransitionWindowView>("StateTransitionWindow");
+        transition.Fade(1500);
         
         var gameMenu = await _uiService.ShowUIPanelWithComponent<GameMenuView>("GameMenu");
         var panel = await _assetProvider.GetAssetAsync<GameObject>("GameState");

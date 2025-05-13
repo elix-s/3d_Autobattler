@@ -124,6 +124,7 @@ MonoBehaviour:
     type: 3}
   _explosionEffect_BigEnemy: {fileID: 1936024721376690687, guid: 862c6f07b1835f046ac0a3301ee81bd9,
     type: 3}
+  _camera: {fileID: 0}
 --- !u!54 &1643875196179053676
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -990,8 +991,8 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 7505786091782328651}
   m_AABB:
-    m_Center: {x: -0.0000019967556, y: -0.116353154, z: 0.0637237}
-    m_Extent: {x: 0.9147092, y: 0.96387315, z: 0.24963368}
+    m_Center: {x: -0.006431967, y: -0.116353154, z: 0.0637237}
+    m_Extent: {x: 0.3204293, y: 0.96387315, z: 0.24963368}
   m_DirtyAABB: 0
 --- !u!1 &4334018646788675260
 GameObject:
@@ -1259,7 +1260,7 @@ MonoBehaviour:
   _explosionEffect: {fileID: 1936024721376690687, guid: 9678196ae63c94740b1e71fbe81d251a,
     type: 3}
   _forceField: {fileID: 5930349322852054256}
-  _cameraTransform: {fileID: 0}
+  _camera: {fileID: 0}
   _spawner: {fileID: 0}
   _moveSpeed: 7
   _rotationSpeed: 15
@@ -1298,7 +1299,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 4
   m_CollisionDetection: 0
 --- !u!136 &4707431475728154016
 CapsuleCollider:

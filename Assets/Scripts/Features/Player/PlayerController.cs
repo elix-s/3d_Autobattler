@@ -40,45 +40,42 @@ public class PlayerController : MonoBehaviour
     private GameSessionService _gameSessionService;
     private GameStateService _gameStateService;
     private SavingSystem _savingSystem;
+    private Logger _logger;
     
     private Vector3 _inputDirection = Vector3.zero;     
     private Vector3 _worldMoveDirection = Vector3.zero;
     private Vector3 _groundPosition = Vector3.zero;
     private bool _isGrounded = false;
     private bool _isDead = false;
-
+    
     [Inject]
     public void Construct(GameSessionService gameSessionService, GameStateService gameStateService,
-        SavingSystem savingSystem)
+        SavingSystem savingSystem, Logger logger)
     {
         _gameSessionService = gameSessionService;
         _gameStateService = gameStateService;
         _savingSystem = savingSystem;
+        _logger = logger;
     }
 
     private void Awake()
     {
-        if (_rb == null) Debug.LogError("Rigidbody not found on Player", this);
-        if (_animator == null) Debug.LogError("Animator not found on Player", this);
-        if (_camera == null) Debug.LogError("Camera Transform not assigned.", this);
+        if (_rb == null) _logger.LogError("Rigidbody not found on Player");
+        if (_animator == null) _logger.LogError("Animator not found on Player");
+        if (_camera == null) _logger.LogError("Camera Transform not assigned.");
         
         if (_groundCheckPoint == null)
         {
-             Debug.LogWarning("Ground Check Point not assigned, creating one at player's base.", this);
-             _groundCheckPoint = new GameObject("GroundCheckPoint").transform;
-             _groundCheckPoint.SetParent(transform);
-             _groundCheckPoint.localPosition = _groundPosition;
+            _logger.LogWarning("Ground Check Point not assigned, creating one at player's base.");
+            _groundCheckPoint = new GameObject("GroundCheckPoint").transform;
+            _groundCheckPoint.SetParent(transform);
+            _groundCheckPoint.localPosition = _groundPosition;
         }
         
         _rb.freezeRotation = true;
         _isDead = false;
     }
-
-    private void Start()
-    {
-        _gameSessionService.GameStarted = true;
-    }
-
+    
     private void Update()
     {
         if (_isDead) return;
@@ -86,6 +83,14 @@ public class PlayerController : MonoBehaviour
         float moveX = Input.GetAxisRaw(HorizontalAxis); 
         float moveZ = Input.GetAxisRaw(VerticalAxis);
         _inputDirection = new Vector3(moveX, 0, moveZ).normalized;
+
+        if (_inputDirection != Vector3.zero)
+        {
+            if (!_gameSessionService.GameStarted)
+            {
+                _gameSessionService.GameStarted = true;
+            }
+        }
         
         if (_camera != null)
         {
@@ -127,6 +132,11 @@ public class PlayerController : MonoBehaviour
     {
         _isGrounded = Physics.CheckSphere(_groundCheckPoint.position, _groundCheckRadius, 
             _groundLayers, QueryTriggerInteraction.Ignore);
+
+        if (!_isGrounded)
+        {
+            _rb.constraints = RigidbodyConstraints.None;
+        }
     }
 
     private void OnCollisionEnter(Collision other)
@@ -152,38 +162,9 @@ public class PlayerController : MonoBehaviour
         var effect = Instantiate(_explosionEffect, other.contacts[0].point, Quaternion.identity);
         Destroy(effect, 1.0f);
 
-        await SaveUserScore();
+        await _gameSessionService.SaveUserScore();
             
         await UniTask.Delay(1000);
         _gameStateService.ChangeState<MenuState>().Forget();
-    }
-
-    private async UniTask SaveUserScore()
-    {
-        var data = await _savingSystem.LoadDataAsync<AppData>();
-
-        if (data.BestResult < _gameSessionService.UserScore)
-        {
-            data.BestResult = _gameSessionService.UserScore;
-            _savingSystem.SaveDataAsync(data).Forget();
-        }
-
-        _gameSessionService.UserScore = 0;
-    }
-    
-    private void OnDrawGizmosSelected()
-    {
-        if (_groundCheckPoint != null)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(_groundCheckPoint.position, _groundCheckRadius);
-        }
-         
-        if (Application.isPlaying && !_isDead)
-        {
-            Gizmos.color = Color.blue;
-            Gizmos.DrawRay(transform.position + Vector3.up * 0.1f, 
-                 _worldMoveDirection * _moveSpeed * 0.2f); 
-        }
     }
 }

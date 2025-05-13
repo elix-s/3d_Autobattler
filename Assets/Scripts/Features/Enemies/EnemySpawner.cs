@@ -20,6 +20,8 @@ public class EnemySpawner : MonoBehaviour
     
     private CancellationTokenSource _cancellationTokenSource;
     
+    private bool _isSpawning;
+    
     [Inject]
     private void Construct(GameSessionService gameSessionService)
     {
@@ -33,45 +35,52 @@ public class EnemySpawner : MonoBehaviour
         _cancellationTokenSource = new CancellationTokenSource();
     }
 
-    private void Start()
+    private async void Update()
     {
         if (!_cancellationTokenSource.IsCancellationRequested)
         {
-            SpawnEnemies();
+            if (_gameSessionService.GameStarted)
+            {
+                if (!_isSpawning)
+                {
+                    await SpawnEnemies();
+                }
+            }
         }
     }
 
-    private async void SpawnEnemies()
+    private async UniTask SpawnEnemies()
     {
-        while (_gameSessionService.GameStarted)
+        _isSpawning = true;
+        
+        try
         {
-            try
+            await UniTask.Delay(_spawnInterval, cancellationToken: _cancellationTokenSource.Token);
+            Vector3 spawnPos;
+
+            do
             {
-                await UniTask.Delay(_spawnInterval, cancellationToken: _cancellationTokenSource.Token);
-                Vector3 spawnPos;
+                spawnPos = new Vector3(Random.Range(-10f, 10f), 0, Random.Range(-10f, 10f));
+            } while (Vector3.Distance(spawnPos, _playerTransform.position) < _minSpawnDistance);
 
-                do
+            if (_playerTransform != null)
+            {
+                if (Random.value > 0.5f)
                 {
-                    spawnPos = new Vector3(Random.Range(-10f, 10f), 0, Random.Range(-10f, 10f));
-                } while (Vector3.Distance(spawnPos, _playerTransform.position) < _minSpawnDistance);
-
-                if (_playerTransform != null)
+                    IEnemy enemy = _bigEnemyFactory.CreateEnemy(_playerTransform, spawnPos, gameObject.transform);
+                }
+                else
                 {
-                    if (Random.value > 0.5f)
-                    {
-                        IEnemy enemy = _bigEnemyFactory.CreateEnemy(_playerTransform, spawnPos, gameObject.transform);
-                    }
-                    else
-                    {
-                        IEnemy enemy = _fastEnemyFactory.CreateEnemy(_playerTransform, spawnPos, gameObject.transform);
-                    }
+                    IEnemy enemy = _fastEnemyFactory.CreateEnemy(_playerTransform, spawnPos, gameObject.transform);
                 }
             }
-            catch (OperationCanceledException)
-            {
-                Debug.Log("Spawner canceled");
-            }
         }
+        catch (OperationCanceledException)
+        {
+            Debug.Log("Spawner canceled");
+        }
+        
+        _isSpawning = false;
     }
     
     public void CancelToken()

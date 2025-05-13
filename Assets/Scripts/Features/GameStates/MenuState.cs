@@ -32,7 +32,8 @@ public class MenuState : IGameState
 
     public async UniTask Enter(StatePayload payload)
     {
-        _uiService.ShowLoadingScreen(1500).Forget();
+        var transition = await _uiService.ShowUIPanelWithComponent<StateTransitionWindowView>("StateTransitionWindow");
+        transition.Fade(1500);
         
         var mainMenu = await _uiService.ShowUIPanelWithComponent<MainMenuView>("MainMenu");
         var panel = await _assetProvider.GetAssetAsync<GameObject>("MenuState");

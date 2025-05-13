@@ -1031,8 +1031,8 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 6286205719314256078}
   m_AABB:
-    m_Center: {x: -0.0000019967556, y: -0.116353154, z: 0.0637237}
-    m_Extent: {x: 0.9147092, y: 0.96387315, z: 0.24963368}
+    m_Center: {x: 0.030513197, y: -0.116353154, z: 0.0637237}
+    m_Extent: {x: 0.3084729, y: 0.96387315, z: 0.24963368}
   m_DirtyAABB: 0
 --- !u!1 &4463010728382513196
 GameObject:
@@ -1217,14 +1217,14 @@ NavMeshAgent:
   m_GameObject: {fileID: 4543158271516446837}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.35
+  m_Radius: 0.5
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
+  m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 1.76
   m_BaseOffset: 0
@@ -1243,8 +1243,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _chaseDistance: 20
-  _stopDistance: 0.1
+  _stopDistance: 0
   _rotationSpeed: 10
+  _destinationUpdateRate: 0.2
 --- !u!114 &2652845284333546517
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1258,7 +1259,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enemyAI: {fileID: 1668565341760806619}
-  _speed: 6
+  _speed: 8
 --- !u!1 &4596933002929317737
 GameObject:
   m_ObjectHideFlags: 0
